@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define COLUMN_LIMIT 2000
+#define COLUMN_LIMIT 3000
 
 // NOTE: Make sure, the file has an \n in the last entry of the input file
 // This is to avoid having to use EOF as a separator.

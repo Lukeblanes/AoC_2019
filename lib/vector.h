@@ -69,3 +69,37 @@ int cv_get_pos(CoordinateVector* cv, coordinate c)
     }
     return 0;
 }
+
+typedef struct {
+    int32_t* elements;
+    int32_t capacity;
+    int32_t size;
+} IntVector;
+
+IntVector* iv_create_coordinate_vector(int capacity)
+{
+    IntVector *created = malloc(sizeof *created);
+    created->elements = malloc((sizeof(uint32_t)) * capacity);
+    created->capacity = capacity;
+    created->size = 0;
+    return created;
+}
+
+void iv_add_int(IntVector* iv, int32_t to_add)
+{
+    iv->elements[iv->size++] = to_add;
+
+    if (iv->capacity == iv->size) // realloc in this case
+    { 
+        int32_t capacity_new = iv->capacity * iv->capacity;
+        int32_t* aux = malloc((sizeof(uint32_t)) * capacity_new);
+
+        for(int i = 0; i < iv->capacity; ++i)
+        {
+            aux[i] = iv->elements[i];
+        }
+        free(iv->elements);
+        iv->elements = aux;
+        iv->capacity = capacity_new;
+    }
+}
