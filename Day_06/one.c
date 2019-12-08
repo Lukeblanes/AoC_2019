@@ -5,30 +5,27 @@
 #include "../lib/utils.h"
 #include "../lib/tree.h"
 
-#define INPUT_LINES 1294
-
 int main(int argc, char** argv)
 {
-    char **lines = malloc(sizeof(char*) * INPUT_LINES);
-    file_read_lines("input.txt", lines);
-
-    char **orbits = malloc(sizeof(char*) * 2);
+    uint32_t size = 0;
+    char **lines = file_read_with_tokenizer("input.txt", '\n', &size);
 
     Tree *tree = tree_init();
-    tokenizer_with_splitter(lines[0], ')', orbits);
+    char **orbits; 
    
-    for(uint32_t i = 0; i < INPUT_LINES; ++i)
+    for(uint32_t i = 0; i < size; ++i)
     {
-        tokenizer_with_splitter(lines[i], ')', orbits);
+        uint32_t orbit_size = 0;
+        orbits = tokenizer_with_delimiter(lines[i], ')', &orbit_size);
         tree_add(&tree, orbits[0], orbits[1]);
+        free_char_pp(orbits, orbit_size);
     }
     
-    printf("total number of orbits is %d\n", tree_get_orbits(tree));
     // output -> 186597
+    printf("total number of orbits is %d\n", tree_get_orbits(tree));
 
     // free resources
-    free_char_pp(lines, INPUT_LINES);
-    free_char_pp(orbits, 2);
+    free_char_pp(lines, size);
 
     return 0;
 }

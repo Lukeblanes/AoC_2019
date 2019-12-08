@@ -3,56 +3,65 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define COLUMN_LIMIT 20000
+#define COLUMN_LIMIT 2048
 
-// NOTE: Make sure, the file has an \n in the last entry of the input file
-// This is to avoid having to use EOF as a separator.
-void file_read_ints_to_array(const char* filename, uint32_t *array)
+char** file_read_with_tokenizer(const char* filename, const char delimiter, uint32_t *token_count)
 {
     FILE *file = fopen(filename, "r");
-    char ch, buffer[COLUMN_LIMIT];
-    int index_array_setter = 0;
+    char ch;
+    uint32_t size = COLUMN_LIMIT;
+    // dynamically allocated in the case that it surpasses max COLUMN_LIMIT
+    char *buffer = malloc(sizeof(char) * size); 
+    char *deleter = buffer; // to delete memory since buffer will be modified
 
+    // First pass where we store all chars and count tokens
     if (file == NULL) {
         printf("Couldn't open the file.");
     } else {
-        int buffer_position_setter = 0;
+        uint32_t pos = 0;
         while( (ch = fgetc(file)) != EOF)
         {
-            if ( ch == '\n')
+            if(pos == size)
             {
-                buffer[buffer_position_setter] = '\0';
-                array[index_array_setter++] = atoi(buffer);
-                buffer_position_setter = 0;
-            } else {
-                buffer[buffer_position_setter++] = ch;
+                size *= size;
+                buffer = deleter = realloc(buffer, size);
+                if(buffer == NULL)
+                {
+                    printf("Error reallocating buffer\n");
+                    exit(-1);
+                }
             }
+            if ( ch == delimiter)
+                (*token_count)++;
+
+            buffer[pos++] = ch;
         }
+        if(buffer[pos-1] != delimiter)
+            (*token_count)++; // One extra count since tokens = delimiters + 1
     }
-}
+    fclose(file);
 
-void file_read_lines(const char* filename, char** lines)
-{
-    FILE *file = fopen(filename, "r");
-    char ch, buffer[COLUMN_LIMIT];
+    // Second pass where we create the array of strings since we know the tokenCount
+    char** lines = malloc(sizeof(char*) * (*token_count));
+    const char delimiter_string[2] = {delimiter, '\0'};
 
-    if (file == NULL) {
-        printf("Couldn't open the file.");
-    } else {
-        int buffer_position_setter = 0;
-        int lines_added = 0;
-        while( (ch = fgetc(file)) != EOF)
+    buffer = strtok(buffer, delimiter_string); // first call of strtok need buffer to be passed
+
+    uint32_t counter = 0;
+    while( buffer!= NULL)
+    {
+        if(counter == (*token_count))
         {
-            if ( ch == '\n')
-            {
-                buffer[buffer_position_setter] = '\0';
-                lines[lines_added] = malloc(sizeof(char) * buffer_position_setter);
-                strcpy(lines[lines_added], buffer);
-                lines_added++;
-                buffer_position_setter = 0;
-            } else {
-                buffer[buffer_position_setter++] = ch;
-            }
+            printf("Inserting more tokens than counted.\n");
+            exit(-1);
         }
+
+        lines[counter] = malloc(sizeof(char) * strlen(buffer) + 1);
+        strcpy(lines[counter], buffer);
+        
+        buffer = strtok(NULL, delimiter_string);
+        counter++;
     }
+    free(deleter);
+    return lines;
 }

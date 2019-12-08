@@ -5,20 +5,15 @@
 #include "../lib/file.h" 
 #include "../lib/utils.h"
 
-#define INPUT_LINES 2
-
 int main(int argc, char** argv)
 {
-    char **lines = malloc(sizeof(char*) * INPUT_LINES);
-    file_read_lines("input.txt", lines);
+    cmd_input_validate(argc, argv, "filename", 2);
+    uint32_t size = 0;
+    char **lines = file_read_with_tokenizer(argv[1], '\n', &size);
 
-    uint32_t tokenCount1 = tokenizer_get_splitter_count(lines[0], ',') + 1;
-    uint32_t tokenCount2 = tokenizer_get_splitter_count(lines[1], ',') + 1;
-    char** tokens1 = malloc(sizeof(char*) * tokenCount1);
-    char** tokens2 = malloc(sizeof(char*) * tokenCount2);
-
-    tokenizer_with_splitter(lines[0], ',', tokens1);
-    tokenizer_with_splitter(lines[1], ',', tokens2);
+    uint32_t tokenCount1 = 0, tokenCount2 = 0;
+    char** tokens1 = tokenizer_with_delimiter(lines[0], ',', &tokenCount1);
+    char** tokens2 = tokenizer_with_delimiter(lines[1], ',', &tokenCount2);
 
     CoordinateVector *wirepath1 = cv_create_coordinate_vector(10000);
 
@@ -96,12 +91,13 @@ int main(int argc, char** argv)
         }
     }
 
+    // Output -> 12934
     printf("Interception with the least steps took %d steps\n", least_steps);
 
     // Freeing resources
     free_char_pp(tokens1, tokenCount1);
     free_char_pp(tokens2, tokenCount2);
-    free_char_pp(lines, INPUT_LINES);
+    free_char_pp(lines, size);
     
     return 0;
 }

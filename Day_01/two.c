@@ -2,8 +2,7 @@
 #include <stdint.h>
 
 #include "../lib/file.h"
-
-const uint32_t INPUT_SIZE = 100;
+#include "../lib/utils.h"
 
 uint32_t complete_fuel_requirements(uint32_t mass)
 {
@@ -16,18 +15,20 @@ uint32_t complete_fuel_requirements(uint32_t mass)
 
 int main(int argc, char** argv)
 {
-    uint32_t array[INPUT_SIZE];
-    file_read_ints_to_array(argv[1], array);
-    
+    cmd_input_validate(argc, argv, "filename", 2);
+    uint32_t size = 0;
+    char** elements = file_read_with_tokenizer(argv[1], '\n', &size);
+ 
     int fuel_requirements = 0;
 
-    for(uint16_t i = 0; i < INPUT_SIZE; ++i)
+    for(uint16_t i = 0; i < size; ++i)
     {
-        uint32_t fuel_required = complete_fuel_requirements(array[i]);
+        uint32_t fuel_required = complete_fuel_requirements(atoi(elements[i]));
         fuel_requirements += fuel_required;
     }
 
-    printf("Fuel requirements is %d\n", fuel_requirements);
+    printf("Fuel requirements is %d\n", fuel_requirements); // Output -> 4928567
 
+    free_char_pp(elements, size);
     return 0;
 }

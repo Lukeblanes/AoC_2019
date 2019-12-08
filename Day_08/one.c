@@ -4,13 +4,12 @@
 #include "../lib/file.h" 
 #include "../lib/utils.h" 
 
-#define INPUT_LINES 1
 #define IMAGE_WIDTH 25
 #define IMAGE_HEIGHT 6
 #define INPUT_LENGTH 15000
 
 // number of 1 digits multiplied by number of 2 digits in layer with least zeros
-void calculate_checksum(char* input, uint32_t length, uint32_t im_width, uint32_t im_height)
+uint32_t calculate_checksum(char* input, uint32_t length, uint32_t im_width, uint32_t im_height)
 {
     uint32_t layer_size = im_width * im_height;
     uint32_t layers = length / layer_size;
@@ -37,18 +36,20 @@ void calculate_checksum(char* input, uint32_t length, uint32_t im_width, uint32_
             least_calculation = two_count * one_count;
         }
     }
-    printf("The calculation is %d\n", least_calculation); // output -> 2806
+    return least_calculation;
 }
 
 int main(int argc, char** argv)
 {
-    char **lines = malloc(sizeof(char*) * INPUT_LINES);
-    file_read_lines("input.txt", lines);
+    uint32_t size = 0;
+    char **lines = file_read_with_tokenizer("input.txt", '\n', &size);
 
-    calculate_checksum(lines[0], INPUT_LENGTH, IMAGE_WIDTH, IMAGE_HEIGHT);
+    uint32_t result = calculate_checksum(lines[0], INPUT_LENGTH, IMAGE_WIDTH, IMAGE_HEIGHT);
+
+    printf("The calculation is %d\n", result); // output -> 2806
 
     // free resources
-    free_char_pp(lines, INPUT_LINES);
+    free_char_pp(lines, size);
 
     return 0;
 }

@@ -5,7 +5,6 @@
 #include "../lib/file.h" 
 #include "../lib/utils.h" 
 
-#define INPUT_LINES 1
 #define NUM_OPCODES 8
 #define GENERATE_INTCODE_OUTPUT 0
 
@@ -87,13 +86,11 @@ void run_intcode_program(int32_t* input, int32_t *PC_pointer, int32_t OP, uint32
 
 int main(int argc, char** argv)
 {
-    char **lines = malloc(sizeof(char*) * INPUT_LINES);
-    file_read_lines("input.txt", lines);
+    uint32_t size = 0;
+    char **lines = file_read_with_tokenizer("input.txt", '\n', &size);
 
-    uint32_t tokenCount = tokenizer_get_splitter_count(lines[0], ',') + 1;
-    char** tokens = malloc(sizeof(char*) * tokenCount);
-
-    tokenizer_with_splitter(lines[0], ',', tokens);
+    uint32_t tokenCount = 0;
+    char** tokens = tokenizer_with_delimiter(lines[0], ',', &tokenCount);
 
     IntVector *inputVector = iv_create_coordinate_vector(10000);
 
@@ -142,7 +139,7 @@ int main(int argc, char** argv)
 
     // free resources
     free_char_pp(tokens, tokenCount);
-    free_char_pp(lines, INPUT_LINES);
+    free_char_pp(lines, size);
 
     return 0;
 }

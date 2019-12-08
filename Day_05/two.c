@@ -5,7 +5,6 @@
 #include "../lib/file.h" 
 #include "../lib/utils.h" 
 
-#define INPUT_LINES 1
 #define PROGRAM_INPUT 5
 #define NUM_OPCODES 8
 
@@ -34,20 +33,16 @@ int32_t get_mode_index(int32_t* input, int32_t PC, int32_t* a, int32_t* b, int32
 
 int main(int argc, char** argv)
 {
-    char **lines = malloc(sizeof(char*) * INPUT_LINES);
-    file_read_lines("input.txt", lines);
+    uint32_t size = 0;
+    char **lines = file_read_with_tokenizer("input.txt", '\n', &size);
 
-    uint32_t tokenCount = tokenizer_get_splitter_count(lines[0], ',') + 1;
-    char** tokens = malloc(sizeof(char*) * tokenCount);
-
-    tokenizer_with_splitter(lines[0], ',', tokens);
+    uint32_t tokenCount = 0;
+    char** tokens = tokenizer_with_delimiter(lines[0], ',', &tokenCount);
 
     IntVector *inputVector = iv_create_coordinate_vector(10000);
 
     for(int i = 0; i < tokenCount; i++)
-    {
         iv_add_int(inputVector, atoi(tokens[i]));
-    }
 
     int32_t a, b, c;
     int32_t* input = inputVector->elements;
@@ -69,9 +64,11 @@ int main(int argc, char** argv)
         }
     }
 
+    // Output -> 14110739
+
     // free resources
     free_char_pp(tokens, tokenCount);
-    free_char_pp(lines, INPUT_LINES);
+    free_char_pp(lines, size);
 
     return 0;
 }
