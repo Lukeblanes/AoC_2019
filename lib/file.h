@@ -3,14 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define COLUMN_LIMIT 3000
+#define COLUMN_LIMIT 20000
 
 // NOTE: Make sure, the file has an \n in the last entry of the input file
 // This is to avoid having to use EOF as a separator.
 void file_read_ints_to_array(const char* filename, uint32_t *array)
 {
     FILE *file = fopen(filename, "r");
-    char ch, buffer[20];
+    char ch, buffer[COLUMN_LIMIT];
     int index_array_setter = 0;
 
     if (file == NULL) {
