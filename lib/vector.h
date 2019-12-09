@@ -76,8 +76,7 @@ typedef struct {
     int64_t size;
 } IntVector;
 
-// Should be changed to iv_create_vector
-IntVector* iv_create_coordinate_vector(int capacity)
+IntVector* iv_create_vector(int capacity)
 {
     IntVector *created = malloc(sizeof *created);
     created->elements = malloc((sizeof(int64_t)) * capacity);

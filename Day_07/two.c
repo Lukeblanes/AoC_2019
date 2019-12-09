@@ -92,7 +92,7 @@ int main(int argc, char** argv)
     uint32_t tokenCount = 0;
     char** tokens = tokenizer_with_delimiter(lines[0], ',', &tokenCount);
 
-    IntVector *inputVector = iv_create_coordinate_vector(10000);
+    IntVector *inputVector = iv_create_vector(10000);
 
     for(int i = 0; i < tokenCount; i++)
         iv_add_int(inputVector, atoi(tokens[i]));
