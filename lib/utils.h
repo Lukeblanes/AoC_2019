@@ -29,7 +29,7 @@ char** tokenizer_with_delimiter(const char* line, const char delimiter, uint32_t
     const char delimiter_string[2] = {delimiter, '\0'};
 
     // we copy the original line to not modify the original line
-    char* token = malloc(sizeof(char) * strlen(line));
+    char* token = malloc(sizeof(char) * strlen(line) + 1);
     char* deleter = token; // to delete since token will stop pointing to start
     strcpy(token, line);
 
@@ -44,7 +44,7 @@ char** tokenizer_with_delimiter(const char* line, const char delimiter, uint32_t
             printf("Inserting more tokens than counted.\n");
             exit(-1);
         }
-        tokens[counter] = malloc(sizeof(char) * strlen(token) + 1) ;
+        tokens[counter] = malloc(sizeof(char) * strlen(token) + 1);
         strcpy(tokens[counter], token);
         
         token = strtok(NULL, delimiter_string);

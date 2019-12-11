@@ -49,7 +49,13 @@ void cv_add_coordinate(CoordinateVector* cv, coordinate c)
     }
 }
 
+void cv_clear(CoordinateVector* cv)
+{
+    cv->size = 0;
+}
+
 // boolean
+// should be renamed to find coordinate
 int cv_check_coordinate(CoordinateVector* cv, coordinate c)
 {
     for(int i = 0; i < cv->size; i++)

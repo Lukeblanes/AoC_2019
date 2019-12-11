@@ -23,7 +23,8 @@ char** file_read_with_tokenizer(const char* filename, const char delimiter, uint
         {
             if(pos == size)
             {
-                size *= size;
+                printf("Reallocating memory. Not enough size.");
+                size *= 2;
                 buffer = deleter = realloc(buffer, size);
                 if(buffer == NULL)
                 {
