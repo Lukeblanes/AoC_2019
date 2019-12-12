@@ -11,10 +11,25 @@ typedef struct {
     int32_t size;
 } CoordinateVector;
 
+typedef struct {
+    coordinate3d* coordinates;
+    int32_t capacity;
+    int32_t size;
+} Coordinate3DVector;
+
 CoordinateVector* cv_create_coordinate_vector(int capacity)
 {
     CoordinateVector *created = (CoordinateVector*)malloc(sizeof *created);
     created->coordinates = (coordinate*)malloc(((sizeof (int32_t)) * 2) * capacity);
+    created->capacity = capacity;
+    created->size = 0;
+    return created;
+}
+
+Coordinate3DVector* cv3_create_coordinate_vector(int capacity)
+{
+    Coordinate3DVector *created = (Coordinate3DVector*)malloc(sizeof *created);
+    created->coordinates = (coordinate3d*)malloc(((sizeof (int32_t)) * 3) * capacity);
     created->capacity = capacity;
     created->size = 0;
     return created;
@@ -26,6 +41,16 @@ void cv_print(const CoordinateVector* cv)
     for(int i = 0; i < cv->size; ++i)
     {
         printf("(%d, %d) ", cv->coordinates[i].x, cv->coordinates[i].y);
+    }
+    printf("\n");
+}
+
+void cv3_print(const Coordinate3DVector* cv)
+{
+    printf("Vector of capacity %d and size %d has elements:\n", cv->capacity, cv->size);
+    for(int i = 0; i < cv->size; ++i)
+    {
+        printf("(%d, %d, %d) ", cv->coordinates[i].x, cv->coordinates[i].y, cv->coordinates[i].z);
     }
     printf("\n");
 }
@@ -49,7 +74,31 @@ void cv_add_coordinate(CoordinateVector* cv, coordinate c)
     }
 }
 
+void cv3_add_coordinate(Coordinate3DVector* cv, coordinate3d c)
+{
+    cv->coordinates[cv->size++] = c;
+
+    if (cv->capacity == cv->size) // realloc in this case
+    { 
+        int32_t capacity_new = cv->capacity * cv->capacity;
+        coordinate3d* aux = (coordinate3d*)malloc(((sizeof (int32_t)) * 3) * capacity_new);
+
+        for(int i = 0; i < cv->capacity; ++i)
+        {
+            aux[i] = cv->coordinates[i];
+        }
+        free(cv->coordinates);
+        cv->coordinates = aux;
+        cv->capacity = capacity_new;
+    }
+}
+
 void cv_clear(CoordinateVector* cv)
+{
+    cv->size = 0;
+}
+
+void cv3_clear(Coordinate3DVector* cv)
 {
     cv->size = 0;
 }
