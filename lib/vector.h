@@ -17,6 +17,18 @@ typedef struct {
     int32_t size;
 } Coordinate3DVector;
 
+// boolean
+// should be renamed to find coordinate
+int cv_check_coordinate(CoordinateVector* cv, coordinate c)
+{
+    for(int i = 0; i < cv->size; i++)
+    {
+        if (cv->coordinates[i].x == c.x && cv->coordinates[i].y == c.y)
+            return 1;
+    }
+    return 0;
+}
+
 CoordinateVector* cv_create_coordinate_vector(int capacity)
 {
     CoordinateVector *created = (CoordinateVector*)malloc(sizeof *created);
@@ -74,6 +86,17 @@ void cv_add_coordinate(CoordinateVector* cv, coordinate c)
     }
 }
 
+// we search to see if it exists before adding
+uint32_t cv_add_unique_coordinate(CoordinateVector* cv, coordinate c)
+{
+    if(cv_check_coordinate(cv, c) != 1) // it doesn't exist so we create
+    {
+        cv_add_coordinate(cv, c);
+        return 1;
+    }
+    return 0;
+}
+
 void cv3_add_coordinate(Coordinate3DVector* cv, coordinate3d c)
 {
     cv->coordinates[cv->size++] = c;
@@ -103,17 +126,7 @@ void cv3_clear(Coordinate3DVector* cv)
     cv->size = 0;
 }
 
-// boolean
-// should be renamed to find coordinate
-int cv_check_coordinate(CoordinateVector* cv, coordinate c)
-{
-    for(int i = 0; i < cv->size; i++)
-    {
-        if (cv->coordinates[i].x == c.x && cv->coordinates[i].y == c.y)
-            return 1;
-    }
-    return 0;
-}
+
 
 int cv_get_pos(CoordinateVector* cv, coordinate c)
 {
