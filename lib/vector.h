@@ -126,8 +126,6 @@ void cv3_clear(Coordinate3DVector* cv)
     cv->size = 0;
 }
 
-
-
 int cv_get_pos(CoordinateVector* cv, coordinate c)
 {
     for(int i = 0; i < cv->size; i++)
@@ -159,7 +157,8 @@ void iv_add_int(IntVector* iv, int64_t to_add)
 
     if (iv->capacity == iv->size) // realloc in this case
     { 
-        int64_t capacity_new = iv->capacity * iv->capacity;
+        printf("Resized IntVector since there isn't enough space\n");
+        int64_t capacity_new = iv->capacity * 2;
         int64_t* aux = malloc((sizeof(int64_t)) * capacity_new);
 
         for(int i = 0; i < iv->capacity; ++i)
@@ -171,3 +170,17 @@ void iv_add_int(IntVector* iv, int64_t to_add)
         iv->capacity = capacity_new;
     }
 }
+
+void iv_clear(IntVector* iv)
+{
+    iv->size = 0;
+}
+
+// destroys iv_dest
+void iv_copy(IntVector* dest, IntVector* source)
+{
+    iv_clear(dest);
+    for (uint32_t i = 0; i < source->size; i++)
+        iv_add_int(dest, source->elements[i]);
+}
+
