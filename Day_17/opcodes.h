@@ -17,7 +17,8 @@ void OP_02(int64_t* input, int64_t *PC, int64_t a, int64_t b, int64_t c, uint64_
 // Input
 void OP_03(int64_t* input, int64_t *PC, int64_t a, int64_t b, int64_t c, uint64_t PC_JMP)
 {
-    input[a] = g_program_input;
+    input[a] = (int32_t) message[g_program_input++];
+    printf("Read input %c\n", (char) input[a]);
     *PC += PC_JMP;
 }
 
