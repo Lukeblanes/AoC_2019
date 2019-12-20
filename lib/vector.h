@@ -184,3 +184,15 @@ void iv_copy(IntVector* dest, IntVector* source)
         iv_add_int(dest, source->elements[i]);
 }
 
+void iv_print(const IntVector* iv)
+{
+    printf("{capacity, size} = {%ld, %ld} and elements = [", iv->capacity, iv->size);
+    for(int i = 0; i < iv->size; ++i)
+    {
+        if(i == iv->size -1)
+            printf("%ld", iv->elements[i]);
+        else
+            printf("%ld, ", iv->elements[i]);
+    }
+    printf("]");
+}

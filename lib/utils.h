@@ -153,3 +153,12 @@ void cmd_input_validate(int argc, char** argv, const char* format, uint32_t mean
         exit(-1);
     }
 }
+
+void grid_print(char **grid, uint32_t width, uint32_t height)
+{
+    for (uint32_t i = 0; i < height; i++) {
+        for (uint32_t j = 0; j < width; j++)
+            printf("%c", grid[i][j]);
+        printf("\n");
+    }
+}
