@@ -70,9 +70,10 @@ int main()
 
     // Perform different shuffles
     char** auxTokens;
+    uint32_t numTokens = 0;
     for (uint32_t i = 0; i < size; i++)
     {
-        auxTokens = tokenizer_with_delimiters(lines[i], " ", NULL);
+        auxTokens = tokenizer_with_delimiters(lines[i], " ", &numTokens);
         if(strcmp(auxTokens[0], "cut") == 0)
             deal_cut_N_cards(deck, atoi(auxTokens[1]));
         else if(strcmp(auxTokens[3], "stack") == 0)
@@ -80,6 +81,8 @@ int main()
         else
             deal_with_increment_N(deck, atoi(auxTokens[3]));
 
+        for (uint32_t i = 0; i < numTokens; i++)
+            free(auxTokens[i]);
         free(auxTokens);
     }
 

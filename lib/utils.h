@@ -26,6 +26,8 @@ char** tokenizer_with_delimiters(const char* line, const char* delimiters, uint3
         uint32_t a = 0;
         token_count = &a;
     }
+    else // we set token_count to 0
+        (*token_count) = 0;
     char ch = line[0]; 
 
     uint32_t charPos = 0;
