@@ -142,13 +142,19 @@ typedef struct {
     int64_t size;
 } IntVector;
 
-IntVector* iv_create_vector(int capacity)
+IntVector* iv_create_vector(uint64_t capacity)
 {
     IntVector *created = malloc(sizeof *created);
     created->elements = malloc((sizeof(int64_t)) * capacity);
     created->capacity = capacity;
     created->size = 0;
     return created;
+}
+
+void iv_destroy_vector(IntVector *iv)
+{
+    free(iv->elements);
+    free(iv);
 }
 
 void iv_add_int(IntVector* iv, int64_t to_add)
@@ -194,5 +200,5 @@ void iv_print(const IntVector* iv)
         else
             printf("%ld, ", iv->elements[i]);
     }
-    printf("]");
+    printf("]\n");
 }
