@@ -146,6 +146,11 @@ IntVector* iv_create_vector(uint64_t capacity)
 {
     IntVector *created = malloc(sizeof *created);
     created->elements = malloc((sizeof(int64_t)) * capacity);
+    if(created->elements == NULL)
+    {
+        printf("It couldn't allocate space for %ld int64_t\n", capacity);
+        exit(-1);
+    }
     created->capacity = capacity;
     created->size = 0;
     return created;
@@ -188,6 +193,15 @@ void iv_copy(IntVector* dest, IntVector* source)
     iv_clear(dest);
     for (uint32_t i = 0; i < source->size; i++)
         iv_add_int(dest, source->elements[i]);
+}
+
+// returns 1 if int exists in vector
+uint32_t iv_find(IntVector* to_find, int64_t to_search)
+{
+    for (uint32_t i = 0; i < to_find->size; i++)
+        if(to_find->elements[i] == to_search)
+            return 1;
+    return 0;
 }
 
 void iv_print(const IntVector* iv)
